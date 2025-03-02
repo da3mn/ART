@@ -1,0 +1,47 @@
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class SafeStringToHashMap {
+    public static void main(String[] args) {
+        String input = "3415,Business Unlimited 5G Account Level Discount Based on Line Volume|~"
+                     + "3416,Business Unlimited 5G Account Level Discount Based on Line Volume|~"
+                     + "3417,Business Unlimited 5G Account Level Discount Based on Line Volume|~"
+                     + "3418,Business Unlimited 5G Account Level Discount Based on Line Volume";
+
+        // Convert input string to HashMap
+        Map<String, String> discountMap = parseToMap(input);
+
+        // Print HashMap
+        discountMap.forEach((k, v) -> System.out.println(k + " => " + v));
+    }
+
+    public static Map<String, String> parseToMap(String input) {
+        Map<String, String> map = new LinkedHashMap<>();
+
+        if (input == null || input.isBlank()) {
+            System.err.println("Invalid input: String is null or empty");
+            return map; // Return empty map safely
+        }
+
+        String[] pairs = input.split("\\|~");
+
+        for (String pair : pairs) {
+            String[] entry = pair.split(",", 2); // Split only at the first comma
+            if (entry.length < 2) {
+                System.err.println("Skipping invalid entry: " + pair);
+                continue;
+            }
+
+            String key = entry[0].trim();
+            String value = entry[1].trim();
+
+            if (!key.isEmpty() && !value.isEmpty()) {
+                map.put(key, value);
+            } else {
+                System.err.println("Skipping entry with empty key/value: " + pair);
+            }
+        }
+
+        return map;
+    }
+}
